@@ -1,7 +1,4 @@
-const rect = {
-  perimeter: (x, y) => (2*(x + y)),
-  area: (x, y) => (x * y)
-};
+const rect = require("./rectangle");
 
 
 function solveRect(l, b) {
@@ -10,7 +7,7 @@ function solveRect(l, b) {
     console.log("Perimeter: ", rect.perimeter(l, b));
     return console.log("\n");
   }
-  
+  // 
   console.log("Both dimensions must be positive non-zero numberer");
 }
 
