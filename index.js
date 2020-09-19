@@ -1,57 +1,17 @@
-
+const hostname = "127.0.0.1";
+const port = 3000;
 const express = require("express");
-const bodyParser = require("body-parser");
-const fileupload = require("express-fileupload");
+const upload = require("express-fileupload");
 
 const app = express();
-const port = 3000;
 
-app.use(express.static(__dirname));
+app.use(upload());
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-app.use(fileupload());
-const knex = require("knex")({
-  client: "sqlite3",
-  useNullAsDefault: true,
-  connection: {
-    filename: "./sqlite3/Node-starter.sqlite"
-  }
+app.get("/", (request, response) => {
+  response.sendFile(`${__dirname}/index.html`);
 });
 
 
-
-
-app.get("/", async (request, response) => {
-  response.send(__dirname + '/index.html');
+app.listen(port, "127.0.0.1", () => {
+  console.log(`Sever running at http://${hostname}:${port}`);
 });
-
-app.post("/public", async (request, response) => {
-  if (request.files || Object.keys(request.files) == 0) {
-    response.status(400).send("Upload failed!");
-    return
-  }
-  const photograph = request.files.photograph;
-  await knex.insert({
-    name: photograph.name, 
-    image: photograph.data //The actual binary buffer
-  }).into("images");
-  photograph.mv("uploads/", async (error) => {
-    return error ? response.status(500).send(error) : response.send("Upload successful!");
-  });
-  console.log(photograph);
-  response.sendStatus(200);
-});
-
-app.get("/image/:id", async (request, response) => {
-  const id = request.params.id;
-  const image = await knex("images").where({id: id}).first();
-  if (image) {
-    response.end(image.image);
-  } else {
-    response.end("Source not found: ")
-  }
-});
-
-app.listen(port, 
-  () => console.log(`Server listen on http://127.0.0.1:${port}`));
