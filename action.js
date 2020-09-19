@@ -6,7 +6,6 @@ const fileupload = require("express-fileupload");
 const app = express();
 const port = 3000;
 
-app.use(express.static(__dirname));
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -22,9 +21,9 @@ const knex = require("knex")({
 
 
 
-app.get("/", async (request, response) => {
-  response.send(__dirname + '/index.html');
-});
+// app.get("/", async (request, response) => {
+//   response.send('/public/index.html');
+// });
 
 app.post("/public", async (request, response) => {
   if (request.files || Object.keys(request.files) == 0) {
@@ -36,11 +35,11 @@ app.post("/public", async (request, response) => {
     name: photograph.name, 
     image: photograph.data //The actual binary buffer
   }).into("images");
-  photograph.mv("uploads/", async (error) => {
-    return error ? response.status(500).send(error) : response.send("Upload successful!");
-  });
+  // photograph.mv("/public/uploads/", async (error) => {
+  //   return error ? response.status(500).send(error) : response.send("Upload successful!");
+  // });
   console.log(photograph);
-  response.sendStatus(200);
+  response.status(200).send("Upload successful!");
 });
 
 app.get("/image/:id", async (request, response) => {
