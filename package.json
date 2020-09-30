@@ -19,6 +19,15 @@
   "homepage": "https://github.com/michaeliyke/NodeJS-Starter#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "express-fileupload": "^1.2.0"
+    "express-fileupload": "^1.2.0",
+    "morgan": "^1.10.0"
   }
 }
+
+
+
+
+
+
+
+

@@ -1,40 +1,21 @@
+const express = require("express");
 const http = require("http");
-const fs = require("fs");
-const path = require("path");
+// const morgan = require("morgan");
 const hostname = "localhost";
 const port = 3000;
 
-const server = http.createServer((request, response) => {
-  console.log(request.headers, request.url, request.method);
-  if (request.method == "GET") {
-    const fileUrl = request.url == "/" ? "/index.html" : request.url;
-    const filePath = path.resolve(`./plublic${fileUrl}`);
-    const file_ext = path.extname(filePath);
-    if (file_ext == ".html") {
-      fs.exists(filePath, (exists) => {
-        if (!exists) {
-          response.statusCode = 404;
-          response.setHeader("Content-Type", "text/html");
-          response.end(`<html><body><h1>Error 404: ${fileUrl} not found</h1></body></html>`);
-          return
-        }
-        response.statusCode = 200;
-        response.setHeader("Content-Type", "text/html");
-        fs.createReadStream(filePath).pipe(response);
-      });
-    } else {
-      response.statusCode = 404;
-          response.setHeader("Content-Type", "text/html");
-          response.end(`<html><body><h1>Error 404: ${fileUrl} not found</h1></body></html>`);
-          return
-    }
-  } else {
-    response.statusCode = 404;
-          response.setHeader("Content-Type", "text/html");
-          response.end(`<html><body><h1>Error 404: ${request.method} not supported</h1></body></html>`);
-          return
-  }
+const app = express(); //Our app wants to use the Express Node module, so construct it!
+// app.use(morgan("dev"));
+const server = http.createServer(app);
+app.use(express.static(`${__dirname}/public`));
+app.use((request, response, next) => {
+  /*Next here is a pass for middle wares into internal exec*/
+  console.log(request.headers);
+  response.statusCode =  200;
+  response.setHeaders("Content-Type", "text/html");
+  response.end("<html><body><h1>This is an Express Server</h1></body></html>")
 });
+
 
 server.listen(port, hostname, () => {
   console.log(`Sever running at http://${hostname}:${port}`)
